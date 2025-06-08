@@ -43,14 +43,8 @@ public class AlquilerService {
         return peliculaDAO.findAll();
     }
 
-     /**
-     * REGISTRAMOS UN NUEVO ALQUILER DE PELICULAS.
-     * LO QUE HACE ES VALIDAR LOS DATOS, CALCULA EL TOTAL Y ACTUALIZA EL STOCK DE LAS PELICULAS.
-     *
-     * @param clienteId EL ID DEL CLIENTE.
-     * @param peliculasSeleccionadas UNA LISTA DE OBJETOS DETALLEAL QUE CONTIENE EL ID DE LA PELICULA Y LA CANTIDAD.
-     * @return TRUE SI EL ALQUILER FUE REGISTRADO EXITOSAMENTE Y SINO UN FALSE EN CASO CONTRARIO.
-     */
+     //AQUI SE HACE EL REGISTRO DE ALQUILER LUEGO VALIDA LOS DATOS Y ACTUALIZA EL STOCK QUE TENEMOS DE PELICULAS
+     
     public boolean registrarAlquiler(Integer clienteId, List<DetalleAlquilerForm> peliculasSeleccionadas) {
         Cliente cliente = clienteDAO.findById(clienteId);
         if (cliente == null) {
