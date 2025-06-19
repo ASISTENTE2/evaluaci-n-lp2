@@ -28,6 +28,7 @@ public class AlquilerService {
     private AlquilerDAO alquilerDAO;
     private DetalleAlquilerDAO detalleAlquilerDAO;
 
+    //MI SERVICIO DE ALQUILER DE PELICULAS SERÁ ACTUALIZADO A SPRING DATA JPA EN LA SIGUIENTE FASE
     public AlquilerService() {
         this.clienteDAO = new ClienteDAOImpl();
         this.peliculaDAO = new PeliculaDAOImpl();
