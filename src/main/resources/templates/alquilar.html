@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Alquiler</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { padding-top: 20px; }
+        .container { max-width: 960px; }
+        .form-check-inline { margin-right: 15px; }
+        .pelicula-item { border: 1px solid #dee2e6; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .cantidad-input { width: 80px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Registrar Nuevo Alquiler</h1>
+
+        <div th:if="${success}" class="alert alert-success" role="alert">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <form id="alquilerForm" th:action="@{/alquilar}" method="post">
+            <div class="form-group">
+                <label for="clienteSelect">Seleccionar Cliente:</label>
+                <select class="form-control" id="clienteSelect" name="clienteId" required>
+                    <option value="">-- Seleccione un Cliente --</option>
+                    <option th:each="cliente : ${clientes}" th:value="${cliente.idCliente}" th:text="${cliente.nombre + ' ' + cliente.apellido + ' (' + cliente.email + ')'}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Seleccionar Películas y Cantidad:</label>
+                <div id="peliculasContainer">
+                    <div th:each="pelicula : ${peliculas}" class="pelicula-item">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input pelicula-checkbox" type="checkbox" th:id="${'pelicula_' + pelicula.idPelicula}" th:data-pelicula-id="${pelicula.idPelicula}">
+                            <label class="form-check-label" th:for="${'pelicula_' + pelicula.idPelicula}">
+                                <span th:text="${pelicula.titulo + ' (' + pelicula.genero + ')'}"></span> - Stock: <span th:text="${pelicula.stock}"></span>
+                            </label>
+                        </div>
+                        <div class="form-group d-inline-block ml-3">
+                            <label th:for="${'cantidad_' + pelicula.idPelicula}">Cantidad:</label>
+                            <input type="number" class="form-control form-control-sm d-inline-block cantidad-input" th:id="${'cantidad_' + pelicula.idPelicula}" value="1" min="1" th:max="${pelicula.stock}" style="width: 80px;" disabled>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(peliculas)}" class="alert alert-warning">
+                        No hay películas disponibles para alquiler.
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="hiddenPeliculasIds" name="peliculasIds">
+            <input type="hidden" id="hiddenCantidades" name="cantidades">
+
+            <button type="submit" class="btn btn-primary">Registrar Alquiler</button>
+        </form>
+        <a href="/" class="btn btn-secondary mt-3">Volver a Inicio</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            
+            $('.pelicula-checkbox').change(function() {
+                var cantidadInput = $(this).closest('.pelicula-item').find('.cantidad-input');
+                if ($(this).is(':checked')) {
+                    cantidadInput.prop('disabled', false);
+                } else {
+                    cantidadInput.prop('disabled', true);
+                    cantidadInput.val(1);
+                }
+            });
+
+            
+            $('#alquilerForm').submit(function(event) {
+                var selectedPeliculasIds = [];
+                var selectedCantidades = [];
+
+                $('.pelicula-checkbox:checked').each(function() {
+                    var peliculaId = $(this).data('pelicula-id');
+                    var cantidad = $(this).closest('.pelicula-item').find('.cantidad-input').val();
+
+                    
+                    if (!cantidad || parseInt(cantidad) <= 0) {
+                        alert('Por favor, ingresa una cantidad válida (mayor que 0) para todas las películas seleccionadas.');
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    selectedPeliculasIds.push(peliculaId);
+                    selectedCantidades.push(cantidad);
+                });
+    
+                if (selectedPeliculasIds.length === 0) {
+                    alert('Por favor, selecciona al menos una película para alquilar.');
+                    event.preventDefault();
+                    return false;
+                }
+
+                $('#hiddenPeliculasIds').val(selectedPeliculasIds.join(','));
+                $('#hiddenCantidades').val(selectedCantidades.join(','));
+            });
+        });
+    </script>
+</body>
+</html>

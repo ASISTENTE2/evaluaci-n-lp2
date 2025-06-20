@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Películas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { padding-top: 20px; }
+        .container { max-width: 960px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Películas Disponibles</h1>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID Película</th>
+                    <th>Título</th>
+                    <th>Género</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pelicula : ${peliculas}">
+                    <td th:text="${pelicula.idPelicula}"></td>
+                    <td th:text="${pelicula.titulo}"></td>
+                    <td th:text="${pelicula.genero}"></td>
+                    <td th:text="${pelicula.stock}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(peliculas)}">
+                    <td colspan="4">No hay películas registradas.</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/" class="btn btn-secondary">Volver a Inicio</a>
+    </div>
+</body>
+</html>
